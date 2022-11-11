@@ -18,12 +18,12 @@
     <main>
         <section class="py-5 text-center container">
             <div style="text-align:left">
-                <p>El sistema tienen almacenado el mensaje: {{saludo}}</p>
-                <p>El sistema tienen la fecha y hora en UTC: {{fecha}}</p>
+                <p>System has the message stored: {{saludo}}</p>
+                <p>Container has the date and hour in UTC Format {{fecha}}</p>
             </div>
             <div style="text-align:left">
-                <input type="text" id="command" placeholder="Ingrese comando a ejecutar" />
-                <button type="submit" onclick="singleton_ejecutar()" class="btn btn-primary my-2">Ejecutar</button>
+                <input type="text" id="command" placeholder="type the command to execute" />
+                <button type="submit" onclick="singleton_ejecutar()" class="btn btn-primary my-2">ExecuteCommand</button>
                 <div class="container" style="background-color: black; color:aqua">
                     <p id="response"></p>
                 </div>
@@ -31,9 +31,9 @@
             <div class="row py-lg-5">
                 <div class="col-lg-6 col-md-8 mx-auto">
                     <div class="container">
-                        <input type="text" id="dir_path" placeholder="Ingrese ruta a consultar" />
-                        <button type="submit" onclick="dir_consult()" class="btn btn-primary my-2">Consultar</button>
-                        <button type="submit" onclick="clean_table()" class="btn btn-primary my-2">Limpiar</button>
+                        <input type="text" id="dir_path" placeholder="Type the path to query" />
+                        <button type="submit" onclick="dir_consult()" class="btn btn-primary my-2">Query</button>
+                        <button type="submit" onclick="clean_table()" class="btn btn-primary my-2">Clean</button>
                     </div>
                     <div class="container">
                         <table class="table" id="table_files" style="text-align:left">
@@ -80,16 +80,16 @@
             query_dir.then(response => {
                 check_result = response.status
                 if (check_result == 400) {
-                    alert('Ingrese una formato de ruta correcto');
+                    alert('type a correct format for the directory');
                 }
                 else if (check_result == 500) {
-                    alert('La ruta ingresada no existe en el servidor');
+                    alert('type path registered is not in the container');
                 }
                 else if (check_result == 200) {
                     console.log(check_result)
                 }
                 else {
-                    alert('Se presento un error tipo ' + check_result);
+                    alert('There is an error ' + check_result);
                 }
             })
         }
@@ -97,7 +97,7 @@
             document.querySelectorAll(".row_data").forEach(el => el.remove());
         }
         function singleton_ejecutar() {
-            document.getElementById("response").innerHTML = 'no se reconoce el comando ingresado';
+            document.getElementById("response").innerHTML = 'The command is not supported';
             const command = document.getElementById("command").value;
             const query_dir = fetch('/server/' + command, {
                 method: 'GET',
@@ -117,7 +117,7 @@
                 else {
                     query_dir.then(response => response.json()).then(
                         respuesta => {
-                            document.getElementById("response").innerHTML = 'no se reconoce el comando ingresado';
+                            document.getElementById("response").innerHTML = 'The command is not supported';
                         }
                     );
                 }
