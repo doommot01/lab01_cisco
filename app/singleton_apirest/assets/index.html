@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Singleton</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+</head>
+<body>
+    <header>
+        <div class="navbar navbar-dark bg-dark shadow-sm">
+            <div class="container">
+                <a href="#" class="navbar-brand d-flex align-items-center">
+                    <strong>Bienvenido a la página Singleton</strong>
+                </a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="py-5 text-center container">
+            <div style="text-align:left">
+                <p>El sistema tienen almacenado el mensaje: {{saludo}}</p>
+                <p>El sistema tienen la fecha y hora en UTC: {{fecha}}</p>
+            </div>
+            <div style="text-align:left">
+                <input type="text" id="command" placeholder="Ingrese comando a ejecutar" />
+                <button type="submit" onclick="singleton_ejecutar()" class="btn btn-primary my-2">Ejecutar</button>
+                <div class="container" style="background-color: black; color:aqua">
+                    <p id="response"></p>
+                </div>
+            </div>
+            <div class="row py-lg-5">
+                <div class="col-lg-6 col-md-8 mx-auto">
+                    <div class="container">
+                        <input type="text" id="dir_path" placeholder="Ingrese ruta a consultar" />
+                        <button type="submit" onclick="dir_consult()" class="btn btn-primary my-2">Consultar</button>
+                        <button type="submit" onclick="clean_table()" class="btn btn-primary my-2">Limpiar</button>
+                    </div>
+                    <div class="container">
+                        <table class="table" id="table_files" style="text-align:left">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>file name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        function dir_consult() {
+            clean_table();
+            const dir_path = document.getElementById("dir_path").value;
+            const query_dir = fetch('/server/dirlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dir_path)
+            });
+            query_dir.then(response => response.json()).then(
+                files => {
+                    list_file = files["files"][0];
+                    for (let key in list_file) {
+                        console.log(list_file[key]);
+                        var table = document.getElementById("table_files");
+                        var row = table.insertRow(-1);
+                        row.classList.add("row_data");
+                        var cell1 = row.insertCell(0);
+                        var cell2 = row.insertCell(1);
+                        cell1.innerHTML = key;
+                        cell2.innerHTML = list_file[key];
+                    }
+                }
+            );
+            query_dir.then(response => {
+                check_result = response.status
+                if (check_result == 400) {
+                    alert('Ingrese una formato de ruta correcto');
+                }
+                else if (check_result == 500) {
+                    alert('La ruta ingresada no existe en el servidor');
+                }
+                else if (check_result == 200) {
+                    console.log(check_result)
+                }
+                else {
+                    alert('Se presento un error tipo ' + check_result);
+                }
+            })
+        }
+        function clean_table() {
+            document.querySelectorAll(".row_data").forEach(el => el.remove());
+        }
+        function singleton_ejecutar() {
+            document.getElementById("response").innerHTML = 'no se reconoce el comando ingresado';
+            const command = document.getElementById("command").value;
+            const query_dir = fetch('/server/' + command, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            query_dir.then(response => {
+                check_result = response.status
+                if (check_result == 200) {
+                    query_dir.then(response => response.json()).then(
+                        respuesta => {
+                            document.getElementById("response").innerHTML = respuesta[Object.keys(respuesta)[0]];
+                        }
+                    );
+                }
+                else {
+                    query_dir.then(response => response.json()).then(
+                        respuesta => {
+                            document.getElementById("response").innerHTML = 'no se reconoce el comando ingresado';
+                        }
+                    );
+                }
+            });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+</body>
+</html>

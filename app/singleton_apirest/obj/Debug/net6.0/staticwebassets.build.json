@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "NshGyyj4hTqKU1EdWdelENkGJOLqh72wilEN09GOb8I=",
+  "Source": "singleton_apirest",
+  "BasePath": "_content/singleton_apirest",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

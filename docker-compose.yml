@@ -1,0 +1,7 @@
+version: '3.9'
+services:
+  singletonapi:
+    container_name: singletonapi
+    build: app/singleton_apirest
+    ports:
+      - "80:80"
